@@ -21,28 +21,28 @@ async def create_csv():
                 'Выполнено практик на неделе'
             )
         )
-    for user in users_list:
-        username = user['username']
-        if username is None:
-            username = 'Отсутствует'
-        else:
-            username = '@' + username
-        start_date = date.fromtimestamp(user['start_date']).strftime('%d-%m-%Y')
-        if user['week_id'] == 0:
-            practices = 0
-        else:
-            practices = await get_practices_sql(user['user_id'], user['week_id'])
-        with open(f'{os.getcwd()}/event_list.csv', 'a', encoding='utf-8') as file:
-            writer = csv.writer(file, lineterminator='\n')
-            writer.writerow(
-                (
-                    username,
-                    user['name'],
-                    user['city'],
-                    user['email'],
-                    user['expectations'],
-                    start_date,
-                    user['week_id'],
-                    practices
+        for user in users_list:
+            username = user['username']
+            if username is None:
+                username = 'Отсутствует'
+            else:
+                username = '@' + username
+            start_date = date.fromtimestamp(user['start_date']).strftime('%d-%m-%Y')
+            if user['week_id'] == 0:
+                practices = 0
+            else:
+                practices = await get_practices_sql(user['user_id'], user['week_id'])
+            with open(f'{os.getcwd()}/event_list.csv', 'a', encoding='utf-8') as file:
+                writer = csv.writer(file, lineterminator='\n')
+                writer.writerow(
+                    (
+                        username,
+                        user['name'],
+                        user['city'],
+                        user['email'],
+                        user['expectations'],
+                        start_date,
+                        user['week_id'],
+                        practices
+                    )
                 )
-            )
