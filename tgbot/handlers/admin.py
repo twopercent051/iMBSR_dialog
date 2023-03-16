@@ -1,3 +1,5 @@
+import os
+
 from aiogram import Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
@@ -5,6 +7,7 @@ from aiogram.dispatcher import FSMContext
 from tgbot.keyboards.admin_inline import *
 from tgbot.models.sql_connector import *
 from tgbot.misc.states import FSMAdmin
+from tgbot.misc.list_creator import create_csv
 from create_bot import bot, config
 
 admin_group = config.misc.admin_group
@@ -68,11 +71,15 @@ async def mailing_finish(message: Message):
 
 
 async def metrics(callback: CallbackQuery):
-    user_list = await get_users_sql()
-    text = f'Сейчас зарегистрировано {len(user_list)} пользователей'
-    kb = home_kb()
-    await callback.message.answer(text, reply_markup=kb)
+    # user_list = await get_users_sql()
+    # text = f'Сейчас зарегистрировано {len(user_list)} пользователей'
+    # kb = home_kb()
+    await create_csv()
+    doc_path = f'{os.getcwd()}/event_list.csv'
+    await bot.send_document(chat_id=admin_group, document=open(doc_path, 'rb'))
     await bot.answer_callback_query(callback.id)
+    # await callback.message.answer(text, reply_markup=kb)
+    # await bot.answer_callback_query(callback.id)
 
 
 async def edition(callback: CallbackQuery):

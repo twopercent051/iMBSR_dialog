@@ -2,6 +2,7 @@ from aiogram import Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 from aiogram_calendar import simple_cal_callback, SimpleCalendar
+from aiogram.utils.markdown import hstrikethrough
 import aiogram_calendar
 
 from tgbot.misc.states import FSMUser, CalendarSG
@@ -47,8 +48,8 @@ async def on_date_select(c: CallbackQuery, widget, manager: DialogManager, selec
             f'✅ Вы выбрали дату {selected_date.strftime("%d.%m.%Y")}',
             'Накануне мы пришлём материалы первой недели курса.'
         ]
-        kb = menu_kb()
-        await c.message.answer('\n'.join(text), reply_markup=kb)
+    kb = menu_kb()
+    await c.message.answer('\n'.join(text), reply_markup=kb)
 
 
 text_calendar = [
@@ -135,6 +136,7 @@ async def get_timezone(callback: CallbackQuery, state: FSMContext):
 
 async def get_expectations(message: Message, state: FSMContext):
     user_id = message.from_user.id
+    username = message.from_user.username
     text = '💛 Для продолжения курса оцените ваше текущее состояние - пройдите тест 👉'
     kb = user_start_test_kb(0)
     async with state.proxy() as data:
@@ -142,7 +144,7 @@ async def get_expectations(message: Message, state: FSMContext):
         city = data.as_dict()['city']
         email = data.as_dict()['email']
         timezone = data.as_dict()['timezone']
-    await create_user_sql(user_id, name, city, email, timezone, message.text)
+    await create_user_sql(user_id, username, name, city, email, timezone, message.text)
     await message.answer(text, reply_markup=kb)
 
 
@@ -180,6 +182,10 @@ async def edit_profile_start(callback: CallbackQuery):
 async def edit_profile_enter(callback: CallbackQuery):
     field = callback.data.split(':')[1]
     text, kb = None, menu_kb()
+    time_text = [
+        '🕓 Выберите время для выполнения ежедневной практики (медитация/йога) по 30 минут. В выбранное время пришлём',
+        'вам напоминалку 🔔. (Введите время в формате hh:mm через двоеточие не позднее 21:00)'
+    ]
     if field == 'name':
         await FSMUser.edit_name.set()
         text = 'Введите новое имя'
@@ -198,10 +204,10 @@ async def edit_profile_enter(callback: CallbackQuery):
         kb = user_timezone_kb()
     if field == 'time_menu':
         await FSMUser.edit_time_menu.set()
-        text = 'Введите время в формате hh:mm через двоеточие не позднее 21:00'
+        text = ''.join(time_text)
     if field == 'time_task':
         await FSMUser.edit_time_task.set()
-        text = 'Введите время в формате hh:mm через двоеточие не позднее 21:00'
+        text = ''.join(time_text)
     # if field == 'date':
     #     # await CalendarSG.showing.set()
     #     text = "Выберите дату начала курса:"
@@ -356,10 +362,13 @@ async def current_result(callback: CallbackQuery):
     profile = await get_profile_sql(user_id)
     if profile['week_id'] < 3:
         test_week_id = 0
+        old_result = None
     elif profile['week_id'] < 8:
         test_week_id = 3
+        old_result = await get_test_result_sql(user_id, 0)
     else:
         test_week_id = 8
+        old_result = await get_test_result_sql(user_id, 3)
     tests = await get_test_result_sql(user_id, test_week_id)
     practices = await get_practices_sql(user_id, profile['week_id'])
     if profile['start_date'] is None:
@@ -392,14 +401,24 @@ async def current_result(callback: CallbackQuery):
     ]
     if tests is not None:
         desc = test_descriptor(tests['anxiety'], tests['depression'])
-        text_test = [
-            '-' * 10,
-            '\n⭐️ <b><u>Текущая оценка состояния</u></b>\n',
-            f'<b>Тревога:</b> {tests["anxiety"]} баллов',
-            f'{desc[0]}\n',
-            f'<b>Депрессия:</b> {tests["depression"]} баллов',
-            desc[1]
-        ]
+        if test_week_id == 0:
+            text_test = [
+                '-' * 10,
+                '\n⭐️ <b><u>Текущая оценка состояния</u></b>\n',
+                f'<b>Тревога:</b> {tests["anxiety"]} баллов',
+                f'{desc[0]}\n',
+                f'<b>Депрессия:</b> {tests["depression"]} баллов',
+                desc[1]
+            ]
+        else:
+            text_test = [
+                '-' * 10,
+                '\n⭐️ <b><u>Текущая оценка состояния</u></b>\n',
+                f'<b>Тревога:</b> {hstrikethrough(old_result["anxiety"])} → {tests["anxiety"]} баллов',
+                f'{desc[0]}\n',
+                f'<b>Депрессия:</b> {hstrikethrough(old_result["depression"])} → {tests["depression"]} баллов',
+                desc[1]
+            ]
         text.extend(text_test)
     if profile['start_date'] is None or profile['start_date'] > time.time():
         kb = current_result_kb(True)
@@ -524,7 +543,7 @@ def register_user(dp: Dispatcher):
     edit_fsm_list = [FSMUser.edit_name, FSMUser.edit_city, FSMUser.edit_email, FSMUser.edit_expectations,
                      FSMUser.edit_time_task, FSMUser.edit_time_menu]
 
-    dp.register_message_handler(user_start, commands=["start"], state="*")
+    dp.register_message_handler(user_start, commands=["start", 'menu'], state="*")
     dp.register_message_handler(get_name, content_types='text', state=FSMUser.name)
     dp.register_message_handler(get_city, content_types='text', state=FSMUser.city)
     dp.register_message_handler(get_email, content_types='text', state=FSMUser.email)

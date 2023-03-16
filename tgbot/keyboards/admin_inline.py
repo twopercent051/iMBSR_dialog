@@ -44,11 +44,16 @@ def week_kb(week_id):
     remind_2_button = InlineKeyboardButton(text=other_keyboards[week_id],
                                            callback_data=f'edit_text:week_{week_id}:remind_other')
     remind_3_button = InlineKeyboardButton(text='Дневник', callback_data=f'edit_text:week_{week_id}:remind_daily')
-    keyboard.add(task_button, remind_1_button, remind_2_button, remind_3_button)
+    feedback_button = InlineKeyboardButton(text='Отзыв', callback_data=f'edit_text:week_{week_id}:remind_other')
+    if week_id != 8:
+        keyboard.add(task_button, remind_1_button, remind_2_button, remind_3_button)
+    else:
+        final_button = InlineKeyboardButton(text='Финал', callback_data=f'edit_text:week_{week_id}:other')
+        keyboard.add(task_button, feedback_button, final_button)
     if week_id == 1:
         other_button = InlineKeyboardButton(text='Видео-кружок', callback_data=f'edit_text:week_{week_id}:other')
         keyboard.add(other_button)
-    elif week_id in [3, 6, 8]:
+    elif week_id in [3, 6]:
         other_button = InlineKeyboardButton(text='Донат', callback_data=f'edit_text:week_{week_id}:other')
         keyboard.add(other_button)
     home_button = InlineKeyboardButton(text='🏠 Домой', callback_data='home')

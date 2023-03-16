@@ -107,7 +107,7 @@ async def questions(callback: CallbackQuery, state: FSMContext):
                 f'<b>Тревога:</b> {anxiety} баллов',
                 f'{description[0]}\n',
                 f'<b>Депрессия:</b> {depression} баллов',
-                description[1],
+                f'{description[1]}\n',
                 'Текущий результат обновлён',
                 'Теперь подумайте, когда хотели бы начать прохождение курса?'
             ]
@@ -122,7 +122,7 @@ async def questions(callback: CallbackQuery, state: FSMContext):
                 f'<b>Тревога:</b> {hstrikethrough(old_result["anxiety"])} → {anxiety} баллов',
                 f'{description[0]}\n',
                 f'<b>Депрессия:</b> {hstrikethrough(old_result["depression"])} → {depression} баллов',
-                description[1],
+                f'{description[1]}\n',
                 'Текущий результат обновлён'
             ]
         if week_id == 8:

@@ -82,7 +82,7 @@ def menu_kb():
 
 
 def time_kb():
-    time_button = InlineKeyboardButton(text='🕒 Выбрать время для 30-минутной практики', callback_data='edit:time_task')
+    time_button = InlineKeyboardButton(text='🕒 Выбрать время для практики', callback_data='edit:time_task')
     keyboard = InlineKeyboardMarkup(row_width=1).add(time_button)
     return keyboard
 
@@ -124,4 +124,10 @@ def support_kb(user_id):
 def donate_kb():
     donate_button = InlineKeyboardButton(text='💰 Поддержать проект', callback_data='donate:finish')
     keyboard = InlineKeyboardMarkup(row_width=1).add(donate_button)
+    return keyboard
+
+
+def feedback_kb():
+    leave_feedback_button = InlineKeyboardButton(text='💬 Написать отзыв', callback_data='support:feedback')
+    keyboard = InlineKeyboardMarkup(row_width=1).add(leave_feedback_button)
     return keyboard

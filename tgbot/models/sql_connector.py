@@ -35,6 +35,7 @@ async def sql_start():
             CREATE TABLE IF NOT EXISTS users(
             id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
             user_id VARCHAR(40),
+            username VARCHAR(40),
             name VARCHAR(50),
             city VARCHAR(50),
             email VARCHAR(40),
@@ -89,10 +90,11 @@ async def sql_start():
         # connection.close()
 
 
-async def create_user_sql(user_id, name, city, email, timezone, expectations):
+async def create_user_sql(user_id, username, name, city, email, timezone, expectations):
     # connection = await connection_init()
-    query = 'INSERT INTO users (user_id, name, city, email, timezone, expectations) VALUES (%s, %s, %s, %s, %s, %s);'
-    query_tuple = (user_id, name, city, email, timezone, expectations)
+    query = 'INSERT INTO users (user_id, username, name, city, email, timezone, expectations) VALUES (%s, %s, %s, %s,' \
+            ' %s, %s, %s);'
+    query_tuple = (user_id, username, name, city, email, timezone, expectations)
     async with connection.get().cursor() as cursor:
         await cursor.execute(query, query_tuple)
     await connection.get().commit()
@@ -179,7 +181,7 @@ async def create_practices_sql(user_id, week_id):
     # connection = await connection_init()
     query = 'INSERT INTO practices (user_id, week_id, counter) VALUES (%s, %s, 1);'
     query_tuple = (user_id, week_id)
-    async with connection.cursor() as cursor:
+    async with connection.get().cursor() as cursor:
         await cursor.execute(query, query_tuple)
     await connection.get().commit()
     # connection.close()
