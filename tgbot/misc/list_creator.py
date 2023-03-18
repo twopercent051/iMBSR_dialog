@@ -27,7 +27,10 @@ async def create_csv():
             username = 'USERNAME IS NONE'
         else:
             username = '@' + username
-        start_date = date.fromtimestamp(user['start_date']).strftime('%d-%m-%Y')
+        if user['start_date'] is None:
+            start_date = 'НЕ ВЫБРАНА'
+        else:
+            start_date = date.fromtimestamp(user['start_date']).strftime('%d-%m-%Y')
         if user['week_id'] == 0:
             practices = 0
         else:
