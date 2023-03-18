@@ -92,9 +92,9 @@ async def sql_start():
 
 async def create_user_sql(user_id, username, name, city, email, timezone, expectations):
     # connection = await connection_init()
-    query = 'INSERT INTO users (user_id, username, name, city, email, timezone, expectations) VALUES (%s, %s, %s, %s,' \
-            ' %s, %s, %s);'
-    query_tuple = (user_id, username, name, city, email, timezone, expectations)
+    query = 'INSERT INTO users (user_id, username, name, city, email, timezone, expectations, remind_hour, ' \
+            'remind_min) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);'
+    query_tuple = (user_id, username, name, city, email, timezone, expectations, 11, 0)
     async with connection.get().cursor() as cursor:
         await cursor.execute(query, query_tuple)
     await connection.get().commit()

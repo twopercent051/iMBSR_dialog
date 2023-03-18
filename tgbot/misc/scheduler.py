@@ -151,27 +151,27 @@ async def tasker(user):
             if counter == 1:
                 if day == 2:
                     next_step_time = await next_step_timer(user_tz, 0, 13, 0)
-                    await edit_profile_sql(user_id, 'next_step_name', 'week_3:other')
+                    await edit_profile_sql(user_id, 'next_step_name', 'week_6:other')
                 else:
                     next_step_time = await next_step_timer(user_tz, 0, 15, 0)
-                    await edit_profile_sql(user_id, 'next_step_name', 'week_3:remind_other:2')
+                    await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_other:2')
             if counter == 2:
                 next_step_time = await next_step_timer(user_tz, 0, 19, 0)
-                await edit_profile_sql(user_id, 'next_step_name', 'week_3:remind_other:3')
+                await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_other:3')
             if counter == 3:
                 next_step_time = await next_step_timer(user_tz, 0, 21, 0)
-                await edit_profile_sql(user_id, 'next_step_name', 'week_3:remind_daily')
+                await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_daily')
         if step_name == 'remind_daily':
             if day < 7:
                 next_step_time = await next_step_timer(user_tz, 1, 11, 0)
-                await edit_profile_sql(user_id, 'next_step_name', 'week_3:remind_other:1')
+                await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_other:1')
                 await edit_profile_sql(user_id, 'day', day + 1)
             else:
                 next_step_time = await next_step_timer(user_tz, 0, 21, 20)
                 await edit_profile_sql(user_id, 'next_step_name', 'week_7:task')
         if step_name == 'other':
             next_step_time = await next_step_timer(user_tz, 0, 15, 0)
-            await edit_profile_sql(user_id, 'next_step_name', 'week_3:remind_other:2')
+            await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_other:2')
             kb = donate_kb()
 
     if week_id == 7:
@@ -221,7 +221,7 @@ async def tasker(user):
             kb = feedback_kb()
         if step_name == 'test':
             next_step_time = await next_step_timer(user_tz, 0, 21, 20)
-            await edit_profile_sql(user_id, 'next_step_name', 'week_8:task:2')
+            await edit_profile_sql(user_id, 'next_step_name', 'week_8:task')
             await edit_profile_sql(user_id, 'week_id', 8)
             await edit_profile_sql(user_id, 'day', 1)
             contain = '💛 Для завершения курса оцените ваше текущее состояние - пройдите тест 👉'
