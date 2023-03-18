@@ -71,12 +71,13 @@ calendarDialog = Dialog(
 
 
 async def calendar_start(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(CalendarSG.calendar_showing, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(CalendarSG.calendar_showing, mode=StartMode.NEW_STACK)
 
 admin_group = config.misc.admin_group
 
 
 async def user_start(message: Message):
+    print(222)
     user_id = message.from_user.id
     is_user = await check_user_sql(user_id)
     if is_user['c'] == 0:

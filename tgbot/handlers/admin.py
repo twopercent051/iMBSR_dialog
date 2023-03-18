@@ -7,7 +7,7 @@ from aiogram.dispatcher import FSMContext
 from tgbot.keyboards.admin_inline import *
 from tgbot.models.sql_connector import *
 from tgbot.misc.states import FSMAdmin
-from tgbot.misc.list_creator import create_csv
+from tgbot.misc.list_creator import create_csv, failed_mail_csv
 from create_bot import bot, config
 
 admin_group = config.misc.admin_group
@@ -45,6 +45,7 @@ async def mailing_start(callback: CallbackQuery):
 async def mailing_finish(message: Message):
     user_list = await get_users_sql()
     counter = 0
+    users_failed = []
     for user in user_list:
         user_id = user['user_id']
         try:
@@ -64,6 +65,17 @@ async def mailing_finish(message: Message):
             counter += 1
         except Exception as ex:
             print(ex)
+            username = user['username']
+            if username is None:
+                username = 'Юзернейм отсутствует'
+            else:
+                username = '@' + username
+            users_failed.append(username)
+    if len(users_failed) != 0:
+        await failed_mail_csv(users_failed)
+        doc_path = f'{os.getcwd()}/users.csv'
+        await bot.send_document(chat_id=admin_group, document=open(doc_path, 'rb'))
+
     text = f'Сообщение разослали {counter} пользователей из {len(user_list)}'
     kb = home_kb()
     await FSMAdmin.home.set()
@@ -71,15 +83,10 @@ async def mailing_finish(message: Message):
 
 
 async def metrics(callback: CallbackQuery):
-    # user_list = await get_users_sql()
-    # text = f'Сейчас зарегистрировано {len(user_list)} пользователей'
-    # kb = home_kb()
     await create_csv()
-    doc_path = f'{os.getcwd()}/event_list.csv'
+    doc_path = f'{os.getcwd()}/users.csv'
     await bot.send_document(chat_id=admin_group, document=open(doc_path, 'rb'))
     await bot.answer_callback_query(callback.id)
-    # await callback.message.answer(text, reply_markup=kb)
-    # await bot.answer_callback_query(callback.id)
 
 
 async def edition(callback: CallbackQuery):
