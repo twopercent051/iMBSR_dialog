@@ -24,7 +24,7 @@ async def create_csv():
     for user in users_list:
         username = user['username']
         if username is None:
-            username = 'Отсутствует'
+            username = 'USERNAME IS NONE'
         else:
             username = '@' + username
         start_date = date.fromtimestamp(user['start_date']).strftime('%d-%m-%Y')

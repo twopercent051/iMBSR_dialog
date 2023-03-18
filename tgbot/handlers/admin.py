@@ -67,13 +67,13 @@ async def mailing_finish(message: Message):
             print(ex)
             username = user['username']
             if username is None:
-                username = 'Юзернейм отсутствует'
+                username = 'USERNAME IS NONE'
             else:
                 username = '@' + username
             users_failed.append(username)
     if len(users_failed) != 0:
         await failed_mail_csv(users_failed)
-        doc_path = f'{os.getcwd()}/users.csv'
+        doc_path = f'{os.getcwd()}/fail_users.csv'
         await bot.send_document(chat_id=admin_group, document=open(doc_path, 'rb'))
 
     text = f'Сообщение разослали {counter} пользователей из {len(user_list)}'
