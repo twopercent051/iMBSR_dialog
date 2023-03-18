@@ -53,7 +53,7 @@ async def failed_mail_csv(user_list):
         writer = csv.writer(file)
         writer.writerow(
             (
-                'Username'
+                'Username',
             )
         )
     for user in user_list:
@@ -61,6 +61,6 @@ async def failed_mail_csv(user_list):
             writer = csv.writer(file, lineterminator='\n')
             writer.writerow(
                 (
-                    user
+                    user,
                 )
             )
