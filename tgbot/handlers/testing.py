@@ -15,7 +15,7 @@ def test_descriptor(anxiety, depression):
     if anxiety <= 7:
         anxiety_text = [
             '<span class="tg-spoiler"><i>Норма</i> - отсутствие достоверно выраженных симптомов',
-            'тревоги.\n<b><i>Рекомендуется<i><b> - 3 раза в неделю уделять себе время и делать практики нашего курса',
+            'тревоги.\n<b><i>Рекомендуется</i></b> - 3 раза в неделю уделять себе время и делать практики нашего курса',
             'для поддержания уровня тревоги в норме.</span>'
         ]
     elif 8 <= anxiety <= 10:
@@ -33,8 +33,8 @@ def test_descriptor(anxiety, depression):
     if depression <= 7:
         depression_text = [
             '<span class="tg-spoiler"><i>Норма</i> - отсутствие достоверно выраженных симптомов',
-            'депрессии.\n<b><i>Рекомендуется<i><b> - 3 раза в неделю уделять себе время и делать практики нашего курса',
-            'для поддержания уровня депрессии в норме.</span>'
+            'депрессии.\n<b><i>Рекомендуется</i></b> - 3 раза в неделю уделять себе время и делать практики нашего',
+            'курса для поддержания уровня депрессии в норме.</span>'
         ]
     elif 8 <= depression <= 10:
         depression_text = [
@@ -126,14 +126,17 @@ async def questions(callback: CallbackQuery, state: FSMContext):
                 'Текущий результат обновлён'
             ]
         if week_id == 8:
-            await edit_profile_sql(user_id, 'next_step_time', 0)
+            await edit_profile_sql(user_id, 'next_step_name', 'week_8:task')
+            await edit_profile_sql(user_id, 'next_step_time', time.time())
+            old_result = await get_test_result_sql(user_id, 0)
             text = [
-                'Поздравляем с завершением курса!!\n',
+                'Тест завершён!\n',
                 '⭐️ <b><u>Текущая оценка состояния</u></b>\n',
-                f'<b>Тревога:</b> {anxiety} баллов',
+                f'<b>Тревога:</b> {hstrikethrough(old_result["anxiety"])} → {anxiety} баллов',
                 f'{description[0]}\n',
-                f'<b>Депрессия:</b> {depression} баллов',
-                description[1],
+                f'<b>Депрессия:</b> {hstrikethrough(old_result["depression"])} → {depression} баллов',
+                f'{description[1]}\n',
+                'Текущий результат обновлён'
             ]
         await create_test_result(user_id, week_id, anxiety, depression)
         kb = finish_test_kb(week_id)

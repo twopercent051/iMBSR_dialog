@@ -3,7 +3,6 @@ import asyncio
 from random import randint
 
 
-
 from tgbot.models.sql_connector import *
 from tgbot.keyboards.user_inline import *
 from tgbot.misc.datetimer import next_step_timer
@@ -195,6 +194,8 @@ async def tasker(user):
 
     if week_id == 8:
         if step_name == 'task':
+            await edit_profile_sql(user_id, 'week_id', 8)
+            await edit_profile_sql(user_id, 'day', 1)
             kb = time_kb()
             next_step_time = await next_step_timer(user_tz, 1, 11, 0)
             await edit_profile_sql(user_id, 'next_step_name', 'week_8:remind_other')
@@ -220,10 +221,7 @@ async def tasker(user):
             next_step_time = 0
             kb = feedback_kb()
         if step_name == 'test':
-            next_step_time = await next_step_timer(user_tz, 0, 21, 20)
-            await edit_profile_sql(user_id, 'next_step_name', 'week_8:task')
-            await edit_profile_sql(user_id, 'week_id', 8)
-            await edit_profile_sql(user_id, 'day', 1)
+
             contain = '💛 Для завершения курса оцените ваше текущее состояние - пройдите тест 👉'
             kb = user_start_test_kb(8)
 
