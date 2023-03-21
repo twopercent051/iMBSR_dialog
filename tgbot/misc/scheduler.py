@@ -172,6 +172,7 @@ async def tasker(user):
             next_step_time = await next_step_timer(user_tz, 0, 15, 0)
             await edit_profile_sql(user_id, 'next_step_name', 'week_6:remind_other:2')
             kb = donate_kb()
+        print(f'WEEK 6: {step_name}')
 
     if week_id == 7:
         if step_name == 'task':
@@ -225,6 +226,8 @@ async def tasker(user):
             contain = '💛 Для завершения курса оцените ваше текущее состояние - пройдите тест 👉'
             kb = user_start_test_kb(8)
 
+    contain = f'{contain}\n\nweek_id:{week_id} || day: {day} || step: {step_name}'
+
     try:
         if step_name == 'other' and week_id == 1:
             next_step_time = await next_step_timer(user_tz, 0, 21, 20)
@@ -238,7 +241,7 @@ async def tasker(user):
     next_step_time = time.time() + 60  # На релиз удалить
     if week_id in [3, 8] and step_name == 'test':
         next_step_time = 0
-
+    print(f'week_id:{week_id} || day: {day} || step: {step_name}')
     await edit_profile_sql(user_id, 'next_step_time', next_step_time)
 
 
@@ -256,7 +259,6 @@ async def reminder(user):
 
 
 async def user_scheduler():
-    print(time.time())
     user_list = await get_users_sql()
     for user in user_list:
         if user['next_step_time'] != 0:
@@ -268,4 +270,4 @@ async def user_scheduler():
 
 
 async def scheduler_jobs():
-    scheduler.add_job(user_scheduler, "interval", seconds=59, max_instances=3)
+    scheduler.add_job(user_scheduler, "interval", seconds=100, max_instances=3)

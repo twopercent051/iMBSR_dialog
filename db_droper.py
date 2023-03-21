@@ -1,5 +1,6 @@
 import pymysql
 from create_bot import config
+import time
 
 
 def connection_init(host, user, password, db_name):
@@ -30,5 +31,21 @@ def deleter():
         connection.close()
 
 
-deleter()
+def corrector():
+    host = config.db.host
+    user = config.db.user
+    password = config.db.password
+    db_name = config.db.database
+    connection = connection_init(host, user, password, db_name)
+    sql_query = 'UPDATE users SET week_id = %s, next_step_time = %s, next_step_name = %s, day = %s WHERE user_id = %s'
+    sql_tuple = (6, int(time.time()), 'week_6:remind_daily', 7, 389929933)
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(sql_query, sql_tuple)
+    finally:
+        connection.commit()
+        connection.close()
 
+
+# deleter()
+corrector()
