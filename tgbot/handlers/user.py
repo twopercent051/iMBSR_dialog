@@ -184,8 +184,8 @@ async def edit_profile_enter(callback: CallbackQuery):
     field = callback.data.split(':')[1]
     text, kb = None, menu_kb()
     time_text = [
-        '🕓 Выберите время для выполнения ежедневной практики (медитация/йога) по 30 минут. В выбранное время пришлём',
-        'вам напоминалку 🔔. (Введите время в формате hh:mm через двоеточие не позднее 21:00)'
+        '🕓 Выберите время для выполнения ежедневной практики по 30 минут. В выбранное время пришлём вам напоминалку 🔔.',
+        '(Введите время в формате hh:mm через двоеточие не позднее 21:00)'
     ]
     if field == 'name':
         await FSMUser.edit_name.set()
@@ -208,7 +208,7 @@ async def edit_profile_enter(callback: CallbackQuery):
         text = ''.join(time_text)
     if field == 'time_task':
         await FSMUser.edit_time_task.set()
-        text = ''.join(time_text)
+        text = '\n'.join(time_text)
     # if field == 'date':
     #     # await CalendarSG.showing.set()
     #     text = "Выберите дату начала курса:"

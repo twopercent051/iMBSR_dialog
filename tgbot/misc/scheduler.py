@@ -220,13 +220,12 @@ async def tasker(user):
                 await edit_profile_sql(user_id, 'next_step_name', 'week_8:other')
         if step_name == 'other':
             next_step_time = 0
-            kb = feedback_kb()
         if step_name == 'test':
 
             contain = '💛 Для завершения курса оцените ваше текущее состояние - пройдите тест 👉'
             kb = user_start_test_kb(8)
 
-    contain = f'{contain}\n\nweek_id:{week_id} || day: {day} || step: {step_name}'
+    # contain = f'{contain}\n\nweek_id:{week_id} || day: {day} || step: {step_name}'
 
     try:
         if step_name == 'other' and week_id == 1:
@@ -240,6 +239,8 @@ async def tasker(user):
 
     next_step_time = time.time() + 60  # На релиз удалить
     if week_id in [3, 8] and step_name == 'test':
+        next_step_time = 0
+    if week_id == 8 and step_name == 'week_8:other':
         next_step_time = 0
     print(f'week_id:{week_id} || day: {day} || step: {step_name}')
     await edit_profile_sql(user_id, 'next_step_time', next_step_time)
