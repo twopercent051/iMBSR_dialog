@@ -210,7 +210,7 @@ async def tasker(user):
                     kb = feedback_kb()
                 else:
                     next_step_time = await next_step_timer(user_tz, 1, 13, 0)
-                    next_step_time = time.time() + 60                             # НА релиз удалить
+                    # next_step_time = time.time() + 60                             # НА релиз удалить
                     await edit_profile_sql(user_id, 'next_step_name', 'week_8:remind_other')
                     await edit_profile_sql(user_id, 'day', day + 1)
                     await edit_profile_sql(user_id, 'next_step_time', next_step_time)
@@ -218,6 +218,8 @@ async def tasker(user):
             else:
                 next_step_time = time.time() + 60
                 await edit_profile_sql(user_id, 'next_step_name', 'week_8:other')
+                await edit_profile_sql(user_id, 'next_step_time', next_step_time)
+                return
         if step_name == 'other':
             next_step_time = 0
         if step_name == 'test':
@@ -237,7 +239,7 @@ async def tasker(user):
     except:
         pass
 
-    next_step_time = time.time() + 60  # На релиз удалить
+    # next_step_time = time.time() + 60  # На релиз удалить
     if week_id in [3, 8] and step_name == 'test':
         next_step_time = 0
     if week_id == 8 and step_name == 'other':
