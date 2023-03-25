@@ -341,13 +341,14 @@ async def edit_date(callback: CallbackQuery, callback_data):
 
 async def practice_counter(callback: CallbackQuery):
     user_id = callback.from_user.id
-    week_id = callback.data.split(':')[1]
+    is_done = callback.data.split('|')[0].split(':')[1]
+    week_id = callback.data.split(':')[2]
     practice = await get_practices_sql(user_id, week_id)
     if practice is None:
         practice_count = 0
     else:
         practice_count = practice['counter']
-    if week_id == 'not':
+    if is_done == 'not':
         text = f'Ничего страшного, в следующий раз получится 💪\n✔ Выполнено практик на неделе: {practice_count}'
     else:
         if practice is None:

@@ -88,8 +88,8 @@ def time_kb():
 
 
 def remind_meditation_kb(week_id):
-    done_button = InlineKeyboardButton(text='✔️ Получилось', callback_data=f'done:{week_id}')
-    not_button = InlineKeyboardButton(text='🕒 В следующий раз', callback_data='done:not')
+    done_button = InlineKeyboardButton(text='✔️ Получилось', callback_data=f'done:yes|week:{week_id}')
+    not_button = InlineKeyboardButton(text='🕒 В следующий раз', callback_data=f'done:not|week:{week_id}')
     keyboard = InlineKeyboardMarkup(row_width=1).add(done_button, not_button)
     return keyboard
 
