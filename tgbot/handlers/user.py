@@ -356,6 +356,7 @@ async def practice_counter(callback: CallbackQuery):
         else:
             await edit_practices_sql(user_id, week_id, practice_count + 1)
         text = f'Отлично, вы молодец 🥳\n✔ Выполнено практик на неделе: {practice_count + 1}'
+    await callback.message.edit_reply_markup(reply_markup=None)
     await callback.message.answer(text)
 
 
