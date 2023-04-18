@@ -536,7 +536,12 @@ async def donate(callback: CallbackQuery):
         ]
         kb = donate_kb()
     else:
-        text = ['РЕКВИЗИТЫ ДЛЯ ДОНАТА']
+        text = [
+            'Реквизиты:'
+            'Номер карты 4276 3801 8067 6483'
+            'Владелец Суворов В.О.'
+            'Сбербанк'
+        ]
         kb = menu_kb()
     await callback.message.answer('\n'.join(text), reply_markup=kb)
     await bot.answer_callback_query(callback.id)
