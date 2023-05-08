@@ -136,27 +136,31 @@ async def edit_text_finish(message: Message, state: FSMContext):
     async with state.proxy() as data:
         week_id = data.as_dict()['week_id']
         title = data.as_dict()['title']
-    new_text = message.html_text
+    if week_id == 1 and title == 'other':
+        new_text = message.video_note.file_id
+        logger.info(f'week:{week_id} || title:{title} || video_id:{new_text}')
+    else:
+        new_text = message.html_text
     await FSMAdmin.home.set()
     await edit_text_sql(week_id, title, new_text)
     await message.answer(text, reply_markup=kb)
 
 
-async def edit_video_note(message: Message, state: FSMContext):
-    async with state.proxy() as data:
-        week_id = data.as_dict()['week_id']
-        title = data.as_dict()['title']
-    logger.info(f'week:{week_id} || title:{title}')
-    if week_id == 1 and title == 'other':
-        text = 'Видео-сообщение обновлено'
-        video_id = message.video_note.file_id
-        await FSMAdmin.home.set()
-        await edit_text_sql(week_id, title, video_id)
-        logger.info(f'week:{week_id} || title:{title} || video_id:{video_id}')
-    else:
-        text = 'Этот раздел не предназначен для видео-сообщений'
-    kb = home_kb()
-    await message.answer(text, reply_markup=kb)
+# async def edit_video_note(message: Message, state: FSMContext):
+#     async with state.proxy() as data:
+#         week_id = data.as_dict()['week_id']
+#         title = data.as_dict()['title']
+#     logger.info(f'week:{week_id} || title:{title}')
+#     if week_id == 1 and title == 'other':
+#         text = 'Видео-сообщение обновлено'
+#         video_id = message.video_note.file_id
+#         await FSMAdmin.home.set()
+#         await edit_text_sql(week_id, title, video_id)
+#         logger.info(f'week:{week_id} || title:{title} || video_id:{video_id}')
+#     else:
+#         text = 'Этот раздел не предназначен для видео-сообщений'
+#     kb = home_kb()
+#     await message.answer(text, reply_markup=kb)
 
 
 async def support_start(callback: CallbackQuery, state: FSMContext):
@@ -185,8 +189,8 @@ def register_admin(dp: Dispatcher):
 
     dp.register_message_handler(admin_start_msg, commands=["start"], state="*", chat_id=admin_group)
     dp.register_message_handler(mailing_finish, content_types=mail_types, state=FSMAdmin.mailing, chat_id=admin_group)
-    dp.register_message_handler(edit_text_finish, content_types='text', state=FSMAdmin.edit, chat_id=admin_group)
-    dp.register_message_handler(edit_video_note, content_types='video_note', state=FSMAdmin.edit, chat_id=admin_group)
+    dp.register_message_handler(edit_text_finish, content_types='*', state=FSMAdmin.edit, chat_id=admin_group)
+    # dp.register_message_handler(edit_video_note, content_types='video_note', state=FSMAdmin.edit, chat_id=admin_group)
     dp.register_message_handler(support_finish, content_types='text', state=FSMAdmin.support, chat_id=admin_group)
 
     dp.register_callback_query_handler(admin_start_clb, lambda x: x.data == 'home', state='*', chat_id=admin_group)
