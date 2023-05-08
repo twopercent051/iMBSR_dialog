@@ -136,6 +136,7 @@ async def edit_text_finish(message: Message, state: FSMContext):
     async with state.proxy() as data:
         week_id = data.as_dict()['week_id']
         title = data.as_dict()['title']
+    logger.info(f'week:{week_id} || title:{title}')
     if week_id == 1 and title == 'other':
         new_text = message.video_note.file_id
         logger.info(f'week:{week_id} || title:{title} || video_id:{new_text}')
