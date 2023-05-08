@@ -16,7 +16,7 @@ from tgbot.middlewares.environment import EnvironmentMiddleware
 from tgbot.misc.scheduler import scheduler_jobs
 from tgbot.models.sql_connector import sql_start, close_sql
 
-from create_bot import bot, dp, config, scheduler
+from create_bot import bot, dp, config, scheduler, logger
 
 from aiogram_dialog import (
     Dialog, DialogManager, DialogRegistry,
@@ -145,10 +145,7 @@ def new_registry(dp):
     return registry
 
 
-logger = logging.getLogger(__name__)
-file_log = logging.FileHandler("logger.log")
-console_out = logging.StreamHandler()
-logging.basicConfig(handlers=(file_log, console_out), level=logging.INFO)
+
 
 
 def register_all_middlewares(dp, config):

@@ -4,12 +4,11 @@ from aiogram import Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 
-from bot import logger
 from tgbot.keyboards.admin_inline import *
 from tgbot.models.sql_connector import *
 from tgbot.misc.states import FSMAdmin
 from tgbot.misc.list_creator import create_csv, failed_mail_csv
-from create_bot import bot, config
+from create_bot import bot, config, logger
 
 admin_group = config.misc.admin_group
 
