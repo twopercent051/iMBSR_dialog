@@ -1,6 +1,6 @@
 import os
 
-from aiogram import Dispatcher
+from aiogram import Dispatcher, types
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 
@@ -172,7 +172,7 @@ def register_admin(dp: Dispatcher):
     mail_types = ['text', 'photo', 'video', 'video_note']
 
     dp.register_message_handler(admin_start_msg, commands=["start"], state="*", chat_id=admin_group)
-    dp.register_message_handler(edit_text_finish, content_types='*', state=FSMAdmin.edit,
+    dp.register_message_handler(edit_text_finish, content_types=mail_types, state=FSMAdmin.edit,
                                 chat_id=admin_group)
     # dp.register_message_handler(edit_video_note, content_types='video_note', state=FSMAdmin.edit, chat_id=admin_group)
     dp.register_message_handler(support_finish, content_types='text', state=FSMAdmin.support, chat_id=admin_group)
