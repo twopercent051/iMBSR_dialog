@@ -111,15 +111,18 @@ async def edit_text_start(callback: CallbackQuery, state: FSMContext):
     value = week_profile[title]
     await FSMAdmin.edit.set()
     await bot.answer_callback_query(callback.id)
+    kb = home_kb()
     if value is None:
         text = 'Пустое значение. Введите сообщение, чтобы сохранить его в БД'
     else:
         if week_id == 1 and title == 'other':
-            await bot.send_video_note(admin_group, video_note=value)
+            try:
+                await bot.send_video_note(admin_group, video_note=value, reply_markup=kb)
+            except:
+                await callback.message.answer(value, reply_markup=kb)
             return
         else:
             text = value
-    kb = home_kb()
     async with state.proxy() as data:
         data['week_id'] = week_id
         data['title'] = title
