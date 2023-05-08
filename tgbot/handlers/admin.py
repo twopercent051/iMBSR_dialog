@@ -138,12 +138,11 @@ async def edit_text_finish(message: Message, state: FSMContext):
         title = data.as_dict()['title']
     logger.info(f'week:{week_id} || title:{title}')
     if week_id == 1 and title == 'other':
-        # new_text = message.video_note.file_id
-        logger.info(message.telegram_types)
+        new_text = message.video_note.file_id
     else:
         new_text = message.html_text
     await FSMAdmin.home.set()
-    # await edit_text_sql(week_id, title, new_text)
+    await edit_text_sql(week_id, title, new_text)
     await message.answer(text, reply_markup=kb)
 
 
