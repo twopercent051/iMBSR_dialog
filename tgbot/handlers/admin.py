@@ -109,24 +109,25 @@ async def edit_text_start(callback: CallbackQuery, state: FSMContext):
     title = callback.data.split(':')[2]
     week_profile = await get_text_sql(week_id)
     value = week_profile[title]
-    await FSMAdmin.edit.set()
-    await bot.answer_callback_query(callback.id)
+
     kb = home_kb()
     if value is None:
         text = 'Пустое значение. Введите сообщение, чтобы сохранить его в БД'
+        await callback.message.answer(text, reply_markup=kb)
     else:
         if week_id == 1 and title == 'other':
             try:
                 await bot.send_video_note(admin_group, video_note=value, reply_markup=kb)
             except:
                 await callback.message.answer(value, reply_markup=kb)
-            return
         else:
             text = value
+            await callback.message.answer(text, reply_markup=kb)
     async with state.proxy() as data:
         data['week_id'] = week_id
         data['title'] = title
-    await callback.message.answer(text, reply_markup=kb)
+    await FSMAdmin.edit.set()
+    await bot.answer_callback_query(callback.id)
 
 
 async def edit_text_finish(message: Message, state: FSMContext):
