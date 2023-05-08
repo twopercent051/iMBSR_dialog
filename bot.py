@@ -145,11 +145,8 @@ def new_registry(dp):
     return registry
 
 
-
-
-
-def register_all_middlewares(dp, config):
-    dp.setup_middleware(EnvironmentMiddleware(config=config))
+# def register_all_middlewares(dp, config):
+#     dp.setup_middleware(EnvironmentMiddleware(config=config))
 
 
 def register_all_filters(dp):
@@ -172,7 +169,7 @@ async def main():
 
     bot['config'] = config
 
-    register_all_middlewares(dp, config)
+    # register_all_middlewares(dp, config)
     register_all_filters(dp)
     register_all_handlers(dp)
     await sql_start()
