@@ -11,8 +11,5 @@ async def get_id(message: types.Message):
     await message.answer(text)
 
 
-
-
-
 def register_echo(dp: Dispatcher):
     dp.register_message_handler(get_id, commands='get_id')
