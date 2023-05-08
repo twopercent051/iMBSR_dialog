@@ -182,10 +182,6 @@ async def main():
 
     logger.info("SQL initialized")
 
-    # new_registry(dp)
-    # registry = new_registry(dp)
-    # dp.register_callback_query_handler(start_d, lambda x: x.data == 'calendar_start', state="*")
-
     registry = DialogRegistry(dp)
     registry.register(calendarDialog)
     dp.register_callback_query_handler(calendar_start, lambda x: x.data == 'calendar_start', state="*")

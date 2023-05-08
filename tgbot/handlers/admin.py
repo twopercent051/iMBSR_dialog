@@ -4,6 +4,7 @@ from aiogram import Dispatcher
 from aiogram.types import Message, CallbackQuery
 from aiogram.dispatcher import FSMContext
 
+from bot import logger
 from tgbot.keyboards.admin_inline import *
 from tgbot.models.sql_connector import *
 from tgbot.misc.states import FSMAdmin
@@ -146,11 +147,13 @@ async def edit_video_note(message: Message, state: FSMContext):
     async with state.proxy() as data:
         week_id = data.as_dict()['week_id']
         title = data.as_dict()['title']
+    logger.info(f'week:{week_id} || title:{title}')
     if week_id == 1 and title == 'other':
         text = 'Видео-сообщение обновлено'
         video_id = message.video_note.file_id
         await FSMAdmin.home.set()
         await edit_text_sql(week_id, title, video_id)
+        logger.info(f'week:{week_id} || title:{title} || video_id:{video_id}')
     else:
         text = 'Этот раздел не предназначен для видео-сообщений'
     kb = home_kb()

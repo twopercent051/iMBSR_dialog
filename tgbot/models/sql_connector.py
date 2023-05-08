@@ -33,7 +33,7 @@ async def sql_start():
         print('In cursor')
         await cursor.execute("""
             CREATE TABLE IF NOT EXISTS users(
-            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, 
+            id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
             user_id VARCHAR(40),
             username VARCHAR(40),
             name VARCHAR(50),
