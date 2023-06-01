@@ -49,19 +49,19 @@ async def mailing_finish(message: Message):
     for user in user_list:
         user_id = user['user_id']
         try:
-            # if message.content_type == 'text':
-            #     await bot.send_message(user_id, message.text)
-            # if message.content_type == 'photo':
-            #     photo = message.photo[0].file_id
-            #     text = message.caption
-            #     await bot.send_photo(user_id, photo, text)
-            # if message.content_type == 'video':
-            #     video = message.video.file_id
-            #     text = message.caption
-            #     await bot.send_video(user_id, video, caption=text)
-            # if message.content_type == 'video_note':
-            #     video = message.video_note.file_id
-            #     await bot.send_video_note(user_id, video)
+            if message.content_type == 'text':
+                await bot.send_message(user_id, message.text)
+            if message.content_type == 'photo':
+                photo = message.photo[0].file_id
+                text = message.caption
+                await bot.send_photo(user_id, photo, text)
+            if message.content_type == 'video':
+                video = message.video.file_id
+                text = message.caption
+                await bot.send_video(user_id, video, caption=text)
+            if message.content_type == 'video_note':
+                video = message.video_note.file_id
+                await bot.send_video_note(user_id, video)
             counter += 1
         except Exception as ex:
             print(ex)
