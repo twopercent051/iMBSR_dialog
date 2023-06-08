@@ -103,7 +103,7 @@ async def tasker(user):
     if week_id == 4:
         if step_name == 'task':
             kb = time_kb()
-            next_step_time = next_step_timer(user_tz, 1, 20, 30)
+            next_step_time = await next_step_timer(user_tz, 1, 20, 30)
             await edit_profile_sql(user_id, 'next_step_name', 'week_4:remind_other')
             await edit_profile_sql(user_id, 'week_id', 4)
             await edit_profile_sql(user_id, 'day', 1)
@@ -176,7 +176,7 @@ async def tasker(user):
     if week_id == 7:
         if step_name == 'task':
             kb = time_kb()
-            next_step_time = next_step_timer(user_tz, 1, 20, 30)
+            next_step_time = await next_step_timer(user_tz, 1, 20, 30)
             await edit_profile_sql(user_id, 'next_step_name', 'week_7:remind_other')
             await edit_profile_sql(user_id, 'week_id', 7)
             await edit_profile_sql(user_id, 'day', 1)
@@ -266,10 +266,16 @@ async def user_scheduler():
     for user in user_list:
         if user['next_step_time'] != 0:
             if user['next_step_time'] < time.time():
-                await tasker(user)
+                try:
+                    await tasker(user)
+                except:
+                    pass
         if user['remind_meditation_time'] != 0:
             if user['remind_meditation_time'] < time.time():
-                await reminder(user)
+                try:
+                    await reminder(user)
+                except:
+                    pass
 
 
 async def scheduler_jobs():
