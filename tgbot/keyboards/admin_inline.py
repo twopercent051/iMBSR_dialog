@@ -49,6 +49,8 @@ def week_kb(week_id):
         keyboard.add(task_button, remind_1_button, remind_2_button, remind_3_button)
     else:
         final_button = InlineKeyboardButton(text='Финал', callback_data=f'edit_text:week_{week_id}:other')
+        task_button = InlineKeyboardButton(text='Задание',
+                                           callback_data=f'edit_text:week_{week_id}:remind_meditation')  # ОЛОЛО
         keyboard.add(task_button, feedback_button, final_button)
     if week_id == 1:
         other_button = InlineKeyboardButton(text='Видео-кружок', callback_data=f'edit_text:week_{week_id}:other')
