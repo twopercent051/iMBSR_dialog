@@ -2,6 +2,7 @@ import asyncio
 import contextvars
 
 import aiomysql
+import pymysql as pymysql
 
 from create_bot import config
 
@@ -95,8 +96,13 @@ async def create_user_sql(user_id, username, name, city, email, timezone, expect
     query = 'INSERT INTO users (user_id, username, name, city, email, timezone, expectations, remind_hour, ' \
             'remind_min) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);'
     query_tuple = (user_id, username, name, city, email, timezone, expectations, 11, 0)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
     # connection.close()
 
@@ -105,20 +111,30 @@ async def check_user_sql(user_id):
     # connection = await connection_init()
     query = 'SELECT COUNT(user_id) AS c FROM users WHERE user_id = (%s);'
     query_tuple = (user_id,)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
-        result = await cursor.fetchone()
-    # connection.close()
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
     return result
 
 
 async def get_users_sql():
     # connection = await connection_init()
     query = 'SELECT * FROM users;'
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query)
-        result = await cursor.fetchall()
-    # connection.close()
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query)
+            result = await cursor.fetchall()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query)
+            result = await cursor.fetchall()
     return result
 
 
@@ -126,21 +142,30 @@ async def create_test_result(user_id, week_id, anxiety, depression):
     # connection = await connection_init()
     query = 'INSERT INTO tests (user_id, week_id, anxiety, depression) VALUES (%s, %s, %s, %s);'
     query_tuple = (user_id, week_id, anxiety, depression)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
-    # connection.close()
+
 
 
 async def get_test_result_sql(user_id, week_id):
     # connection = await connection_init()
     query = 'SELECT * FROM tests WHERE user_id = (%s) AND week_id = (%s);'
     query_tuple = (user_id, week_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
-        result = await cursor.fetchone()
-    await connection.get().commit()
-    # connection.close()
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
     return result
 
 
@@ -148,11 +173,15 @@ async def get_profile_sql(user_id):
     # connection = await connection_init()
     query = 'SELECT * FROM users WHERE user_id = (%s);'
     query_tuple = (user_id,)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
-        result = await cursor.fetchone()
-    await connection.get().commit()
-    # connection.close()
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
     return result
 
 
@@ -160,20 +189,29 @@ async def edit_profile_sql(user_id, field, value):
     # connection = await connection_init()
     query = f'UPDATE users SET {field} = (%s) WHERE user_id = (%s);'
     query_tuple = (value, user_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
-    # connection.close()
 
 
 async def get_practices_sql(user_id, week_id):
     # connection = await connection_init()
     query = 'SELECT counter FROM practices WHERE user_id = (%s) AND week_id = (%s);'
     query_tuple = (user_id, week_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
-        result = await cursor.fetchone()
-    # connection.close()
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
     return result
 
 
@@ -181,40 +219,60 @@ async def create_practices_sql(user_id, week_id):
     # connection = await connection_init()
     query = 'INSERT INTO practices (user_id, week_id, counter) VALUES (%s, %s, 1);'
     query_tuple = (user_id, week_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
-    # connection.close()
 
 
 async def edit_practices_sql(user_id, week_id, counter):
     # connection = await connection_init()
     query = f'UPDATE practices SET counter = (%s) WHERE user_id = (%s) AND week_id = (%s);'
     query_tuple = (counter, user_id, week_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
-    # connection.close()
 
 
 async def edit_text_sql(week_id, field, value):
     # connection = await connection_init()
     query = f'UPDATE texts SET {field} = (%s) WHERE week_id = (%s);'
     query_tuple = (value, week_id)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
+
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
     await connection.get().commit()
-    # connection.close()
 
 
 async def get_text_sql(week_id):
     # connection = await connection_init()
     query = 'SELECT * FROM texts WHERE week_id = (%s);'
     query_tuple = (week_id,)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query, query_tuple)
-        result = await cursor.fetchone()
-    # connection.close()
+
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query, query_tuple)
+            result = await cursor.fetchone()
     return result
 
 
@@ -234,10 +292,18 @@ async def reset_user_sql(user_id):
     query_practices = 'DELETE FROM practices WHERE user_id = (%s);'
     query_tests = 'DELETE FROM tests WHERE user_id = (%s);'
     query_tuple = (user_id,)
-    async with connection.get().cursor() as cursor:
-        await cursor.execute(query_users, query_tuple)
-        await cursor.execute(query_practices, query_tuple)
-        await cursor.execute(query_tests, query_tuple)
+
+    try:
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query_users, query_tuple)
+            await cursor.execute(query_practices, query_tuple)
+            await cursor.execute(query_tests, query_tuple)
+    except pymysql.err.InterfaceError:
+        await connection_init()
+        async with connection.get().cursor() as cursor:
+            await cursor.execute(query_users, query_tuple)
+            await cursor.execute(query_practices, query_tuple)
+            await cursor.execute(query_tests, query_tuple)
     await connection.get().commit()
     # connection.close()
 
